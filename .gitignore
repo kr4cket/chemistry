@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.py[co]
+*.egg-info/
+*.egg
+*.pyd
+*.pyo
+*.pyc
+*.pyo
+
+# Виртуальное окружение
+venv/
+.venv/
+env/
+.venv/*
+
+# Логи и прочий мусор
+*.log
+*.tmp
+*.swp
+*~
+
+# Конфигурационные файлы IDE
+.vscode/
+.idea/
+
+# Docker
+*.log
+docker-compose.override.yml
+.env
+dist/
+build/
+*.pid
+.gitlab-ci.yml
+.github/
