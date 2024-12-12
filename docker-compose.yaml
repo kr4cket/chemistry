@@ -1,4 +1,22 @@
 services:
   application:
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/chemistry_db
+    depends_on:
+      - database
 
   database:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=qwer1234
+      - MONGO_INITDB_DATABASE=chemistry_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
