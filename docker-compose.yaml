@@ -6,17 +6,50 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - MONGO_URI=mongodb://database:27017/chemistry_db
+      SQLALCHEMY_DATABASE_URI: 'postgresql+asyncpg://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin}@db:5432/chemistry_db'
+    healthcheck:
+      test: curl -f http://127.0.0.1:8000/api/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500mb  
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"  
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+    networks:
+      - backend-net
 
   database:
-    image: mongo:latest
+    image: postgres:13.14
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=qwer1234
-      - MONGO_INITDB_DATABASE=chemistry_db
-    ports:
-      - "27017:27017"
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: chemistry_db
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER:-admin} -d chemistry_db
+      interval: 1m30s
+      timeout: 10s
+      start_period: 1m30s
+      retries: 3
     volumes:
-      - ./data/db:/data/db
+      - "./.database:/var/lib/postgresql/data"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - backend-net
+
+networks:
+  backend-net:
