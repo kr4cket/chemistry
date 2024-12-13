@@ -16,6 +16,7 @@ env/
 .venv/*
 
 # Логи и прочий мусор
+.database/
 *.log
 *.tmp
 *.swp
@@ -26,7 +27,6 @@ env/
 .idea/
 
 # Docker
-.database
 data/
 *.log
 docker-compose.override.yml
