@@ -16,6 +16,7 @@ env/
 .venv/*
 
 # Логи и прочий мусор
+.database/
 *.log
 *.tmp
 *.swp
