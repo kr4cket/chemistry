@@ -26,7 +26,7 @@ env/
 .idea/
 
 # Docker
-.database/
+.database
 data/
 *.log
 docker-compose.override.yml
