@@ -54,3 +54,7 @@ services:
 
 networks:
   backend-net:
+
+volumes:
+  prefect-data:
+    driver: local
