@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { paths } from "@/shared/config";
-import { Layout } from "@/app/layout";
+import { Layout } from "../layout";
 
 const createRouter = () =>
   createBrowserRouter([
@@ -12,7 +12,7 @@ const createRouter = () =>
         {
           path: paths.app.dashboards.path,
           lazy: async () => {
-            const dashboard = await import("./dashboards/index");
+            const dashboard = await import("@/page/dashboards/index");
             return { element: <dashboard.default /> };
           },
         },
@@ -20,7 +20,7 @@ const createRouter = () =>
         {
           path: paths.app.update.path,
           lazy: async () => {
-            const update = await import("./update/index");
+            const update = await import("@/page/update/index");
             return { element: <update.default /> };
           },
         },
@@ -28,7 +28,7 @@ const createRouter = () =>
         {
           path: paths.app.data.path,
           lazy: async () => {
-            const data = await import("./dataTable/index");
+            const data = await import("@/page/dataTable/index");
             return { element: <data.default /> };
           },
         },
@@ -36,7 +36,7 @@ const createRouter = () =>
         {
           path: "*",
           lazy: async () => {
-            const notFound = await import("./notFound/index");
+            const notFound = await import("@/page/notFound/index");
             return { element: <notFound.default /> };
           },
         },
