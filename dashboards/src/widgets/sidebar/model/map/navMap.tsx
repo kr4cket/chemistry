@@ -14,7 +14,7 @@ export const navMap = [
     icon: <Upload size={16} strokeWidth={1} />,
   },
   {
-    name: "Данные",
+    name: "База данных",
     to: paths.app.data.path,
     icon: <Database size={16} strokeWidth={1} />,
   },
