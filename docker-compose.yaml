@@ -1,38 +1,29 @@
 services:
-  client-app:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    networks:
-      - backend-net
-
   api-app:
-    build: 
+    build:
       context: ./api
       dockerfile: Dockerfile
     ports:
       - "8000:${API_PORT}"
     environment:
-      SQLALCHEMY_DATABASE_URI: ${API_DATA_URL}
+      MONGO_DATABASE_URI: ${API_DATA_URL}
       PORT: ${API_PORT}
     healthcheck:
       test: curl -f http://127.0.0.1:${API_PORT}/api/ || exit 1
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 1m
+      start_period: 20s
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 500mb  
+          cpus: "0.5"
+          memory: 500mb
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "10"  
+        max-file: "10"
     depends_on:
       database:
         condition: service_healthy
@@ -40,23 +31,23 @@ services:
       - backend-net
 
   database:
-    image: postgres:13.14
+    image: mongo:6.0
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     healthcheck:
-      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
-      interval: 1m30s
+      test: mongo --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --eval "db.adminCommand('ping')"
+      interval: 1m
       timeout: 10s
-      start_period: 1m30s
+      start_period: 10s
       retries: 3
     volumes:
-      - "./.database:/var/lib/postgresql/data"
+      - "./.database:/data/db"
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 2G
     networks:
       - backend-net
