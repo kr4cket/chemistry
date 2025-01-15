@@ -1,4 +1,18 @@
 services:
+  frontend:
+    build:
+      context: ./dashboards
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - backend-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 300mb
+
   api-app:
     build:
       context: ./api
@@ -25,8 +39,7 @@ services:
         max-size: "200k"
         max-file: "10"
     depends_on:
-      database:
-        condition: service_healthy
+      - database
     networks:
       - backend-net
 
@@ -38,10 +51,10 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     healthcheck:
       test: mongo --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --eval "db.adminCommand('ping')"
-      interval: 1m
-      timeout: 10s
-      start_period: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
     volumes:
       - "./.database:/data/db"
     deploy:
